@@ -50,12 +50,25 @@ model PlayerUnlockedLocation {
   location   Location @relation(fields: [locationId], references: [id])
 }
 
+model Edge {
+  id        Int      @id @default(autoincrement())
+  fromId    Int
+  toId      Int
+  distance  Int // 距离或消耗
+  eventRate Float // 事件概率
+  isActive  Boolean  @default(true)
+  from      Location @relation("FromLocation", fields: [fromId], references: [id])
+  to        Location @relation("ToLocation", fields: [toId], references: [id])
+}
+
 model Location {
   id          Int     @id @default(autoincrement())
   name        String
   description String
   unlockLevel Int
   isActive    Boolean @default(true)
+  fromEdges   Edge[]  @relation("FromLocation")
+  toEdges     Edge[]  @relation("ToLocation")
 
   items      Item[]
   unlockedBy PlayerUnlockedLocation[]

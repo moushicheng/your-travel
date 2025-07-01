@@ -49,4 +49,11 @@ export class TravelDomainService {
     if (locationId === 2) base = 40;
     return Math.max(10, base - playerLevel);
   }
+}
+
+export interface TravelReward {
+  itemId: number;
+  quantity: number;
+  rarity: '普通' | '稀有' | '传说';
+  description?: string;
 } 

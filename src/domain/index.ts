@@ -78,3 +78,6 @@ export class Item {
 
 export * from './player/player.service';
 export * from './travel/travel.service';
+export * from './item/item.service';
+export * from './inventory/inventory.service';
+export * from './location/location.service';
