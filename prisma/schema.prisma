@@ -37,6 +37,7 @@ model Player {
   friends           Friendship[]             @relation("PlayerFriends")
   friendOf          Friendship[]             @relation("FriendFriends")
   unlockedLocations PlayerUnlockedLocation[]
+  travels           PlayerTravel[]
   PlayerTrait       PlayerTrait[]
   PlayerSpecialItem PlayerSpecialItem[]
   PlayerAchievement PlayerAchievement[]
@@ -70,8 +71,10 @@ model Location {
   fromEdges   Edge[]  @relation("FromLocation")
   toEdges     Edge[]  @relation("ToLocation")
 
-  items      Item[]
-  unlockedBy PlayerUnlockedLocation[]
+  items           Item[]
+  unlockedBy      PlayerUnlockedLocation[]
+  mapEndLocations MapEndLocation[]
+  travelPaths     TravelPath[]
 }
 
 model Item {
@@ -160,4 +163,48 @@ model PlayerAchievement {
 
   player      Player      @relation(fields: [playerId], references: [id])
   achievement Achievement @relation(fields: [achievementId], references: [id])
+}
+
+model Map {
+  id              Int              @id @default(autoincrement())
+  name            String
+  description     String
+  startLocationId Int
+  isActive        Boolean          @default(true)
+  playerTravels   PlayerTravel[]
+  endLocations    MapEndLocation[]
+}
+
+model MapEndLocation {
+  id         Int      @id @default(autoincrement())
+  mapId      Int
+  locationId Int
+  weight     Int      @default(1) // 权重，用于随机选择
+  map        Map      @relation(fields: [mapId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+}
+
+model PlayerTravel {
+  id               Int          @id @default(autoincrement())
+  playerId         Int
+  mapId            Int
+  startLocationId  Int
+  endLocationId    Int
+  currentPathIndex Int // 当前在路径中的位置索引
+  progress         Float // 当前路段的进度 0-1
+  startTime        DateTime     @default(now())
+  lastUpdateTime   DateTime     @default(now())
+  isActive         Boolean      @default(true)
+  player           Player       @relation(fields: [playerId], references: [id])
+  map              Map          @relation(fields: [mapId], references: [id])
+  path             TravelPath[]
+}
+
+model TravelPath {
+  id         Int          @id @default(autoincrement())
+  travelId   Int
+  locationId Int
+  pathIndex  Int // 在路径中的顺序
+  travel     PlayerTravel @relation(fields: [travelId], references: [id])
+  location   Location     @relation(fields: [locationId], references: [id])
 }

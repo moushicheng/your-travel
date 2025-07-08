@@ -81,3 +81,4 @@ export * from './travel/travel.service';
 export * from './item/item.service';
 export * from './inventory/inventory.service';
 export * from './location/location.service';
+export * from './travel/travel-record.service';
